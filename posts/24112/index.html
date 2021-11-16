@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ityoung">
+
+
+
+
+
+<title>Java多线程基础 | 谢谢你这么好看还来访问我的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="谢谢你这么好看还来访问我的博客" type="application/atom+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">展开目录</a>
+        <a onclick="go_top()">返回顶部</a>
+        <a onclick="go_bottom()">到达尾部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java多线程基础</h1>
+            
+                <div class="post-meta">
+                    
+                        作者: <a itemprop="author" rel="author" href="/">Ityoung</a>
+                    
+
+                    
+                        <span class="post-time">
+                        发布时间: <a href="#">2021-04-18&nbsp;&nbsp;12:51:27</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    分类:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+					<br/>
+					<!-- 开始添加字数统计-->
+					
+						
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-keyboard-o"></i>
+	<span class="post-meta-item-text">  字数统计: </span>
+	<!-- 安装插件npm install hexo-wordcount --save -->
+	<span class="post-count" style="color: #2d96bd">1.9k</span>字
+  </span>
+</span>
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-hourglass-half"></i>
+	<span class="post-meta-item-text">  阅读时长: </span>
+	<span class="post-count" style="color: #2d96bd">6</span>分
+  </span>
+</span>
+
+					
+					<!-- 添加完成 -->
+                </div>
+            
+			<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span> visits</span>
+			
+        </header>
+
+        <div class="post-content">
+            <h3 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h3><blockquote>
+<p>进程(Process)和线程(Thread的概念</p>
+</blockquote>
+<p>进程是系统执行程序的一次执行过程,是系统资源分配的单位</p>
+<p>线程则是CPU调度和执行的单位</p>
+<p><code>一个进程可以有若干个线程,当然一个进程至少得拥有一个线程</code></p>
+<ul>
+<li><strong>线程就是独立的执行路径；</strong></li>
+<li>在线程运行时，即使没有自己创建线程，后台也会有多个线程，如主线程，gc线程(Java垃圾回收)；</li>
+<li>main()称之为主线程，为系统的入口，用于执行整个程序；</li>
+<li>在一个进程中，如果开辟了多个线程，线程的运行由调度器安排调度，调度器是与操作系统紧密相关的，先后顺序是不能人为的干预的。</li>
+<li>对同一份资源操作时，会存在资源抢夺的问题，需要加入并发控制；</li>
+<li>线程会带来额外的开销，如cpu调度时间，并发控制开销。</li>
+<li><code>每个线程在自己的工作内存交互，内存控制不当会造成数据不一致</code></li>
+</ul>
+<blockquote>
+<p>单线程和多线程的图解</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20210111205445.png" alt="Snipaste_2021-01-11_18-28-47"><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20210111205500.png" alt="Snipaste_2021-01-11_18-29-08"></p>
+<h3 id="线程创建"><a href="#线程创建" class="headerlink" title="线程创建"></a>线程创建</h3><ol>
+<li><p><strong>继承Thread类(重点)</strong></p>
+<ul>
+<li>自定义线程类继承*Thread类</li>
+<li>重写run()方法<code>线程的方法体</code></li>
+<li>调用start()方法开启线程</li>
+</ul>
+</li>
+<li><p><strong>实现Runnable接口(重点)</strong></p>
+<ul>
+<li><p>定义MyRunnable类实现Runnable接口</p>
+</li>
+<li><p>实现run()方法,编写线程执行体</p>
+</li>
+<li><p>创建线程对象Thread对象将自定义Runnable类放入线程对象参数中,在调用satrt()方法启动线程<code>Thread(MyRunnable)</code></p>
+<p><code>推荐使用实现Runnable接口,因为Java的单继承局限性</code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>实现Callable接口(了解)</strong></p>
+<ul>
+<li><p>任务类实现Callable接口</p>
+</li>
+<li><p>重写call()方法,需要抛出异常</p>
+</li>
+<li><p>创建目标对象：chuju cj = new chuju();</p>
+</li>
+<li><p>创建线程池服务：ExecutorService es = Executors.newCachedThreadPool();</p>
+</li>
+<li><p>提交任务：Future<Boolean> future = es.submit(cj);</p>
+</li>
+<li><p>获取子线程中任务的执行结果：Boolean rs = future.get()</p>
+</li>
+<li><p>关闭服务：es.shutdownNow();</p>
+<p><code>优点:可以定义返回值,能抛出异常</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="线程状态"><a href="#线程状态" class="headerlink" title="线程状态"></a>线程状态</h3><ul>
+<li>创建状态</li>
+<li>就绪状态</li>
+<li>阻塞状态</li>
+<li>运行状态</li>
+<li>死亡状态</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20210112021446.png" alt="image-20210112021446617"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20210112022703.png" alt="image-20210112022703393"></p>
+<h3 id="线程方法"><a href="#线程方法" class="headerlink" title="线程方法"></a>线程方法</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>setPriority(int new Priority)</td>
+<td>更改线程的优先级</td>
+</tr>
+<tr>
+<td>static void sleep(long millisecond)</td>
+<td>在指定的毫秒数内让当前正在执行的线程休眠</td>
+</tr>
+<tr>
+<td>void join()</td>
+<td>等待该线程终止</td>
+</tr>
+<tr>
+<td>static void yield()</td>
+<td>暂停当前正在执行的线程对象,并执行其他线程</td>
+</tr>
+<tr>
+<td>void interrupt()</td>
+<td>终端线程,别用这个</td>
+</tr>
+<tr>
+<td>boolean isAlive()</td>
+<td>测试线程是否处于活动状态</td>
+</tr>
+</tbody></table>
+<h4 id="线程休眠-sleep"><a href="#线程休眠-sleep" class="headerlink" title="线程休眠 sleep()"></a>线程休眠 sleep()</h4><ul>
+<li>sleep(毫秒数)指定当前线程停止的实践</li>
+<li>sleep()存在异常InteruptedException</li>
+<li>sleep()实践到达后线程进入就绪状态</li>
+<li>sleep()可以模拟网络延时,倒计时等</li>
+<li>每一个对象都有一个锁,sleep不会释放锁</li>
+</ul>
+<h4 id="线程礼让-yield"><a href="#线程礼让-yield" class="headerlink" title="线程礼让 yield()"></a>线程礼让 yield()</h4><ul>
+<li>礼让线程,让当前正在执行的线程暂停,但不阻塞</li>
+<li>将线程从运行状态转为就绪状态</li>
+<li>让CPU重新调度,礼让不一定成功,看CPU心情</li>
+</ul>
+<h4 id="线程强制执行-join"><a href="#线程强制执行-join" class="headerlink" title="线程强制执行 join()"></a>线程强制执行 join()</h4><ul>
+<li>Join合并线程,待此线程执行完成后,在执行其他线程,其他线程阻塞</li>
+<li>可以想象成插队</li>
+</ul>
+<p><code>执行join之前线程是并行的</code></p>
+<h4 id="线程优先级"><a href="#线程优先级" class="headerlink" title="线程优先级"></a>线程优先级</h4><ul>
+<li>java提供一个线程调度器来监控程序中启动后进入就绪状态的所有线程;线程调度器按照优先级决定该调度哪个线程来执行</li>
+<li>线程的优先级用数字来表示,范围从1~10<ul>
+<li>Thread.MIN_PRIORITY = 1</li>
+<li>Thread.MAX_PRIORITY= 10</li>
+<li>Thread.NORM_PRIORITY = 5</li>
+</ul>
+</li>
+<li>使用getPriority()和setPriority()来获取或改变优先级</li>
+</ul>
+<h4 id="守护线程setDeamon"><a href="#守护线程setDeamon" class="headerlink" title="守护线程setDeamon()"></a>守护线程setDeamon()</h4><ul>
+<li>线程分为用户线程和守护线程</li>
+<li>虚拟机必须确保用户线程执行完毕</li>
+<li>虚拟机不用等待守护线程执行完毕</li>
+<li>如后台记录操作日志,监控内存,垃圾回收</li>
+</ul>
+<h4 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h4><ul>
+<li><p>处理多线程问题时,多个线程访问同一个对象,并且某些线程还想修改这个对象,这时候我们就需要线程同步,线程同步其实是一种等待机制,多个需要同时访问此对象的线程进入这个对象的等待池形成队列,等待前面的线程使用完毕,下一个线程在使用</p>
+</li>
+<li><p>由于同一进程的多个线程共享同一块存储空间,在带来方便的同时,也带来了访问的冲突问题,为了保证数据在方法中被访问时的正确性,在访问时加入</p>
+<p>锁机制syncronized</p>
+<p>,当一个线程获得对象的排他锁,独占资源,其他线程必须等待,使用后释放锁即可,存在一下问题</p>
+<ul>
+<li>一个线程持有锁会导致其他所有需要此锁的进程挂起</li>
+<li>在多线程竞争的情况下,加锁,释放锁会导致比较多的上下文切换和调度延时,引起性能问题</li>
+<li>如果一个优先级高的线程等待一个优先级低的线程释放锁会导致优先级倒置,引起性能问题</li>
+</ul>
+</li>
+</ul>
+<h4 id="同步方法和同步块"><a href="#同步方法和同步块" class="headerlink" title="同步方法和同步块"></a>同步方法和同步块</h4><ul>
+<li>同步块: synchronized(obj){}</li>
+<li>obj称之为同步监视器<ul>
+<li>obj可以是任何对象,但是推荐使用共享资源作为同步监视器</li>
+<li>同步方法中无需指定同步监视器,因为同步方法中的同步监视器就是this,就是这个对象本身,或者是class</li>
+</ul>
+</li>
+<li>同步监视器的执行过程<ul>
+<li>第一个线程访问,锁定同步监视器,执行其中的代码</li>
+<li>第二个线程访问,发现同步监视器被锁定,无法访问</li>
+<li>第一个线程访问完毕,解锁同步监视器</li>
+<li>第二个线程访问,发现同步监视器没有锁,然后锁定并访问</li>
+</ul>
+</li>
+<li>同步方法在方法上添加synchronized关键子,锁的是对象本身</li>
+</ul>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><ul>
+<li>多个线程各自占有一些共享资源,并且互相等待其他线程占有的资源释放才能运行,而导致两个或者多个线程都在等待对方释放资源,都停止执行的情形,某一个同步块同时拥有”两个以上的对象锁”时,就可能发生死锁现象</li>
+</ul>
+<h4 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h4><ul>
+<li>互斥条件: 一个资源每次只能被一个进程使用</li>
+<li>请求保持条件: 一个进程因请求资源而阻塞时.对以获得的资源保持不放</li>
+<li>不剥夺条件: 进程已获得的资源,在未使用完之前,不能强行剥夺</li>
+<li>循环等待条件: 若干进程之间形成一种头尾相接的循环等待资源关系</li>
+</ul>
+<h4 id="Lock锁"><a href="#Lock锁" class="headerlink" title="Lock锁"></a>Lock锁</h4><ul>
+<li>从JDK1.5开始,java提供了更为强大的线程同步机制——通过显示定义同步锁对象来实现同步,同步锁使用lock对象来充当</li>
+<li>java.util.concurrent.locks.Lock接口是控制多个线程对共享资源进行访问的工具。锁提供了对共享资源的独占访问,每次只能有一个线程对Lock对象加锁,线程开始访问共享资源之前应先获得Lock对象</li>
+<li>ReentrantLock类实现了Lock,它拥有与synchronized相同的并发性和内存语义,在实现线程安全的控制中.比较常用的是ReentrantLock,可以显示加锁,释放锁</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>作者:</span>
+                        <span>Ityoung</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>本站链接:</span>
+                        <span><a href="http://www.jiuyuesheng.top/posts/24112/">http://www.jiuyuesheng.top/posts/24112/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>执照:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+				<!--
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+				-->
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>标签:</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java%E9%AB%98%E7%BA%A7/"><i class="iconfont icon-githubiconfont icon-tags"></i>Java高级</a>
+                    
+                        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><i class="iconfont icon-githubiconfont icon-tags"></i>多线程</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回</a>
+                <span>· </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/63692/">logback的配置文件</a>
+            
+            
+            <a class="next" rel="next" href="/posts/19458/">Java8新特性—lambda表达式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Powered by Ityoung</span>
+		
+			<br/>
+			
+
+	<span id="busuanzi_container_site_pv">
+		总访问量:
+		<span id="busuanzi_value_site_pv"></span>
+	</span>
+
+
+	<span id="busuanzi_container_site_uv">
+		总访客量:
+		<span  id="busuanzi_value_site_uv"></span>
+	</span>&nbsp;
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		
+	</div>
+	
+</footer>
+
+    </div>
+</body>
+</html>

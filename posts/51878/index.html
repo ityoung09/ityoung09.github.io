@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ityoung">
+
+
+
+
+
+<title>ElasticSearch 7.x笔记 | 谢谢你这么好看还来访问我的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="谢谢你这么好看还来访问我的博客" type="application/atom+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">展开目录</a>
+        <a onclick="go_top()">返回顶部</a>
+        <a onclick="go_bottom()">到达尾部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">ElasticSearch 7.x笔记</h1>
+            
+                <div class="post-meta">
+                    
+                        作者: <a itemprop="author" rel="author" href="/">Ityoung</a>
+                    
+
+                    
+                        <span class="post-time">
+                        发布时间: <a href="#">2020-12-31&nbsp;&nbsp;21:18:26</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    分类:
+                            
+                                <a href="/categories/ElasticSearch/">ElasticSearch</a>
+                            
+                        </span>
+                    
+					<br/>
+					<!-- 开始添加字数统计-->
+					
+						
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-keyboard-o"></i>
+	<span class="post-meta-item-text">  字数统计: </span>
+	<!-- 安装插件npm install hexo-wordcount --save -->
+	<span class="post-count" style="color: #2d96bd">5.4k</span>字
+  </span>
+</span>
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-hourglass-half"></i>
+	<span class="post-meta-item-text">  阅读时长: </span>
+	<span class="post-count" style="color: #2d96bd">20</span>分
+  </span>
+</span>
+
+					
+					<!-- 添加完成 -->
+                </div>
+            
+			<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span> visits</span>
+			
+        </header>
+
+        <div class="post-content">
+            <h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此文章是up主-<strong>遇见狂神说</strong>的资料，将他的资料拉取在这是为了更好的查找资料。</p>
+<p>这是大神的讲解视频：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17a4y1x7zq?p=1">https://www.bilibili.com/video/BV17a4y1x7zq?p=1</a></p>
+<p>资料是别人博客拷贝的:<a target="_blank" rel="noopener" href="https://awslzhang.top/2020/10/18/%E7%8B%82%E7%A5%9E%E8%AF%B4ElasticSearch-7-x%E7%AC%94%E8%AE%B0%EF%BC%88%E7%BA%AF%E6%89%8B%E6%95%B2%EF%BC%89/">https://awslzhang.top/2020/10/18/%E7%8B%82%E7%A5%9E%E8%AF%B4ElasticSearch-7-x%E7%AC%94%E8%AE%B0%EF%BC%88%E7%BA%AF%E6%89%8B%E6%95%B2%EF%BC%89/</a></p>
+<h1 id="狂神聊ElasticSearch-初级阶段"><a href="#狂神聊ElasticSearch-初级阶段" class="headerlink" title="狂神聊ElasticSearch(初级阶段)"></a>狂神聊ElasticSearch(初级阶段)</h1><p>E L K</p>
+<p>版本:Elasticsearch7.6.1 (全网最新的)</p>
+<p>6.X 和 7.X 区别十分大(原生API,RestFul高级)</p>
+<blockquote>
+<p>我们要讲解什么?</p>
+</blockquote>
+<p>SQL: like查询%狂神说%,如果是大数据,就十分慢!索引!</p>
+<p>Elasticsearch:搜索(百度,github,淘宝电商!)</p>
+<ol>
+<li> 聊一个人</li>
+<li> 货比三家</li>
+<li> 安装</li>
+<li> 生态圈</li>
+<li> 分词器 ik</li>
+<li> RestFul操作 ES</li>
+<li> CRUD</li>
+<li> SpringBoot 集成 ElasticSearch(从原理分析!)</li>
+<li> 爬虫爬取数据(京东)</li>
+<li> 实战,模拟全文检索!</li>
+</ol>
+<blockquote>
+<p>以后你只要需要用到搜索,就可以用ES!(大数据量的情况下使用!)</p>
+</blockquote>
+<p>学了这个就不需要用MySQL来查了</p>
+<h1 id="聊聊DougCutting"><a href="#聊聊DougCutting" class="headerlink" title="聊聊DougCutting"></a>聊聊DougCutting</h1><p>为什么要讲这个人,后面要聊大数据</p>
+<blockquote>
+<p>本故事内容来自公众号：新枣课堂</p>
+</blockquote>
+<p>1998年9月4号,google公司在美国硅谷成立.正如大家所知,它是一家<strong>搜索</strong>引擎起家的公司</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610550313.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610550313.png" alt="1596610550313"></a></p>
+<p>无独有偶,一位名叫DougCutting的美国工程师,也迷上了搜索引擎.他做了一个用于文本搜索的函数库(姑且理解为软件的功能组件),命名为Lucene.</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610568104.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610568104.png" alt="1596610568104"></a></p>
+<p>Lucene使用Java写的,目标是为各种中小型应用软件加入全文检索功能.因为好用而且开源(代码公开),非常受程序员们稀罕)</p>
+<p>在这个过程中,google确实找到了不少好的办法,并且无私地分享了出来.</p>
+<p>开源是一种精神!</p>
+<p>2003年,google发表了一篇技术学术论文,公开介绍了自己的谷歌文件系统GFS(google File System).这是google公司为了存储海量搜素数据而设计的专用文件系统</p>
+<p>第二年,2004年,Doug Cutting基于google的GFS论文,实现了分布式文件存储系统,并将它命名为NDFS(Nutch Distributed File System)</p>
+<p>还是2004年,google又发表了一篇技术学术论文,介绍自己的MapReduce编程模型.这个编程模型,用于大规模数据集(大于1TB)的并行分析运算.</p>
+<p>2005年,Doug Cutting 又基于MapReduce,在Nutch搜索引擎实现了该功能.</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610581999.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610581999.png" alt="1596610581999"></a></p>
+<p>2006年,当时依然很厉害的Yahoo(雅虎)公司,招安了Doug Cutting</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610607769.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610607769.png" alt="1596610607769"></a></p>
+<p>截图</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610720399.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610720399.png" alt="1596610720399"></a></p>
+<p>我们继续往下说.</p>
+<p>还是2006年,google有发表论文了</p>
+<p>这次,他们介绍自己的BigTable,这是一种分布式的数据存储系统,一种用来处理海量数据的非关系型数据库.</p>
+<p>Doug Cutting 当然没有放过,在自己的hadoop系统里面,引入了BigTable,并命名为HBase.</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610829469.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610829469.png" alt="1596610829469"></a></p>
+<p>好吧,反正就是紧跟Google时代步伐,你出什么,我学什么</p>
+<p>所有,Hadoop的核心部分,基本上都有Google的影子.</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610891867.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596610891867.png" alt="1596610891867"></a></p>
+<p>2008年1月,Hadoop成功上位,成为Apache基金会的顶级项目.</p>
+<p>同年2月,Yahoo宣布建成了一个拥有1W个内核的Hadoop集群,并将自己的搜索引擎产品部署在上面.</p>
+<p>7月,Hadoop打破世界纪录,成为最快排序1TB数据的系统,用时209秒.</p>
+<h1 id="Elasticsearch概述"><a href="#Elasticsearch概述" class="headerlink" title="Elasticsearch概述"></a>Elasticsearch概述</h1><p>elasticsearch,简称为es,es是一个开源的扩展的分布式全文检索引擎,他可以近乎实时的存储,检索数据;本身扩展性很好,可以扩展到上百台服务器,处理PB级别(大数据时代)的数据.es也使用Java并发使用Lucene作为其核心来实现所有索引和搜索的功能,但是它的目的是通过简单的RESTful API 来隐藏Lucene的复杂性,从而让全文搜索变得简单.</p>
+<p>据国际权威的数据库产品评测机构DB Engines的统计,在2016年1月,ElasticSearch已超过Solr等,成为排名第一的搜索引擎类应用</p>
+<blockquote>
+<p>历史</p>
+</blockquote>
+<p>多年前,一个叫做shay banon的刚结婚不久的失业开发者,由于妻子要去伦敦学习厨师,他便跟着去了.在他找工作的过程中,为了给妻子构建一个食谱的搜索引擎,他开始构建一个早期版本的Lucene</p>
+<p>直接 基于Lucene工作会比较困难,所以Shay开始抽象Lucene代码以便Java程序员可以在应用中添加搜索功能.他发布了他的第一个开源项目,叫做”compass” 后来Shay找到一份工作,这个工作处在高性能和内存数据网络的分布式环境中,因此高性能的,实时的,分布式的搜索引擎也是理所当然需要的.然后他决定重写Compass库,使其成为一个独立的服务叫做Elasticsearch.第一个公开版本出现在2010年2月,在那之后Elasticsearch已经成为Github上最受欢迎的项目之一,代码贡献者超过300人.一家主营Elasticsearch的公司就此成立,他们一边提供商业支持,一边开发新功能,不过Elasticsearch将永远开源且对所有人可用 Shay的妻子依然等待着他的食谱搜索…….</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/03-elasticsearch-%E6%A6%82%E8%BF%B0.assets/1597974189393.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/03-elasticsearch-%E6%A6%82%E8%BF%B0.assets/1597974189393.png" alt="1597974189393"></a></p>
+<p>谁在使用</p>
+<ol>
+<li> 维基百科(百度百科,全文高亮,排序搜素推荐,权重,百度!)</li>
+<li> The Guardian</li>
+<li> Stack Overflow(国外的程序异常处理网站)IT 问题,程序的报错,提交上去,有人会跟你讨论和回答</li>
+<li> Github</li>
+<li> 电商网站 淘宝京东</li>
+<li> 日志数据分析,logstash采集日志,ES进行复杂的数据分析,ELK技术,elasticsearch+logstach+kibana</li>
+<li> 商品价格监控网站,用户设定</li>
+</ol>
+<h1 id="Elasticsearch和Solr差别"><a href="#Elasticsearch和Solr差别" class="headerlink" title="Elasticsearch和Solr差别"></a>Elasticsearch和Solr差别</h1><p>Elasticsearch是一个实时分布式搜索和分析引擎.它让你以前所未有的速度处理大数据成为可能. 维基百科使用它提供全文搜索并高亮关键字,以及输入实时搜索</p>
+<p>Solr简介 Solr是Apache下的一个顶级开源项目,采用Java开发,它是基于Lucene的全文搜索服务器.solr提供了比Lucene更为丰富的查询语言,同时实现了可配置,可扩展,并对索引,搜索性能进行优化 他可以独立运行,运行在tomcat ,jety等这些Servlet容器中 solr对外提供类似于Web-server的API接口</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613190316.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613190316.png" alt="1596613190316"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613206055.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613206055.png" alt="1596613206055"></a></p>
+<p>随着数据量的增加,solr的搜索</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613233807.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613233807.png" alt="1596613233807"></a></p>
+<p>50倍的效率</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613255957.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596613255957.png" alt="1596613255957"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png" alt="1597974203192"></a></p>
+<h2 id="ElasticSearch-vs-Solr-总结"><a href="#ElasticSearch-vs-Solr-总结" class="headerlink" title="ElasticSearch vs Solr 总结"></a>ElasticSearch vs Solr 总结</h2><ol>
+<li> es基本是<code>开箱即用</code>(解压就可以用了!),非常简单.solr安装略微复杂一丢丢!</li>
+<li> Solr利用Zookeeper进行分布式管理,而<code>Elasticsearch自身带有分布式协调管理功能</code>.</li>
+<li> solr支持更多格式的数据,比如JSON,XML,CSV, 而elasticsearch仅仅支持json文件格式</li>
+<li> Solr官网提供的功能很多,而elasticsearch本身更注重核心功能,高级功能多有第三方插件提供,例如图形化界面需要kibana友好质层支撑</li>
+<li>Solr查询块,但更新索引时慢(即插入删除慢),用于电商等查询多的应用;<ul>
+<li>  ES建立索引块(即查询慢),即<code>实时性查询快</code>,用于facebook新浪等搜索.</li>
+<li>  Solr是传统搜索应用的有力解决方案,但Elasticsearch更适用于新兴的实时搜索应用.</li>
+</ul>
+</li>
+<li> Solr比较成熟,有一个更大,更成熟的用户,开发好贡献者社区,而Elasticsearch相对开发维护者较少,更新太快,<code>学习使用成本较高</code>.</li>
+</ol>
+<h1 id="Elasticsearch安装"><a href="#Elasticsearch安装" class="headerlink" title="Elasticsearch安装"></a>Elasticsearch安装</h1><blockquote>
+<p>声明:JDK1.8, 最低要求 , Elasticsearch客户端,界面工具!</p>
+</blockquote>
+<p><strong>Java开发,elasticsearch的版本和我们之后对应的Java的核心jar包! 版本对应! JDK环境是正常的</strong></p>
+<p><strong>这里一定要保证</strong></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614089583.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614089583.png" alt="1596614089583"></a></p>
+<p>下载</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614104028.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614104028.png" alt="1596614104028"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614119890.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596614119890.png" alt="1596614119890"></a></p>
+<p>一定要在服务器上面搭建</p>
+<p>下载地址:<a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/elasticsearch">https://www.elastic.co/cn/downloads/elasticsearch</a></p>
+<p>官网下载巨慢,翻墙,网盘中下载即可</p>
+<p>华为云: <a target="_blank" rel="noopener" href="https://mirrors.huaweicloud.com/elasticsearch/7.6.2/">https://mirrors.huaweicloud.com/elasticsearch/7.6.2/</a></p>
+<p>我们学习的话Window和Linux都可以学习 <code>我们这里现在window下学习</code></p>
+<p>ELK三剑客,解压即用!(web项目! 前端环境! npm 下载依赖)</p>
+<p>Node.js python2</p>
+<blockquote>
+<p>window下安装!</p>
+</blockquote>
+<ol>
+<li> elasticSearch</li>
+<li> elasticSearch Head：一个前端项目</li>
+<li> kibana</li>
+</ol>
+<p>过程：略</p>
+<h1 id="ES核心概念理解"><a href="#ES核心概念理解" class="headerlink" title="ES核心概念理解"></a>ES核心概念理解</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在前面的学习中,我们掌握了es是什么,同时也把es的服务已经安装启动,那么es是如何去存储数据,数据结构是什么,又是如何实现搜索的呢?我们先来聊聊Elasticsearch的相关概念吧!</p>
+<p><strong>集群,节点,索引,类型,文档,分片,映射</strong>是什么</p>
+<blockquote>
+<p>elasticsearch是面向文档的,关系行数据库和elasticsearch客观的对比! 一切都是json</p>
+</blockquote>
+<table><thead><tr><th>RelationalDB</th><th>Elasticsearch</th></tr></thead><tbody><tr><td>数据库(database)</td><td>索引(indices)</td></tr><tr><td>表(tables)</td><td>types(7版本以及之后会被抛弃，默认_doc)</td></tr><tr><td>行(rows)</td><td>documents</td></tr><tr><td>字段(columns)</td><td>fields</td></tr></tbody></table>
+
+<p>面向文档 面向文档 面向文档 ~~~</p>
+<p>elasticsearch(集群)中可以包含多个索引(数据库),每个索引中可以包含多个类型(表),每个类型先又包含多个文档(行),每个文档中又包含多个字段(列).</p>
+<h2 id="物理设计"><a href="#物理设计" class="headerlink" title="物理设计"></a>物理设计</h2><p>elasticsearch在后台吧每个<strong>索引划分成多个分片</strong>,每个分片可以在集群中的不同服务器间迁移</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596629957996.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596629957996.png" alt="1596629957996"></a></p>
+<h2 id="逻辑设计"><a href="#逻辑设计" class="headerlink" title="逻辑设计"></a>逻辑设计</h2><p>一个索引类型中,包含多个文档,比如所文档1,文档2.当我们索引一篇文章时,可以通过这样的一各顺序找到它:索引&gt;类型</p>
+<p><code>&gt;</code>文档id,通过这个组合我们就能索引到某个具体的文档. 注意: id不必是整数,实际上他是一个字符串.</p>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Name</th>
+<th>Age</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>zhansan</td>
+<td>18</td>
+</tr>
+<tr>
+<td>2</td>
+<td>kuangshen</td>
+<td>23</td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png" alt="1597974203192"></a></p>
+<p>之前说elasticsearch是面向文档的,name就也为这索引和搜索数据的最小单位是文档,elasticsearch中,文档有几个重要属性:</p>
+<ul>
+<li><p>自我包含,一篇文档同时包含字段和对应值,也就是同时包含key:value!</p>
+</li>
+<li><p>可以是层次型的,一个文档中包含文档,复杂的逻辑实体就是这么来的!</p>
+</li>
+<li><p>灵活的结构,文档不依赖预先定义的模式,我们知道关系型数据库中,要提前定义字段才能使用,在elasticsearch中,对于字段是非常灵活的,有时候,我们可以忽略该字段,或者动态的添加一个新的字段.</p>
+<p>尽管我们可以随意的新增或者忽略某个字段,但是,每个字段的类型非常重要,比如一个年龄字段类型,可以是字符串也可以是整型.因为elasticsearch会保存字段和类型之间的映射及其他的设置.这种映射具体到每个映射的每种类型,这也是为什么在elasticsearch中,类型有时候也称为映射类型.</p>
+</li>
+</ul>
+<blockquote>
+<p>类型</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596630612189.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596630612189.png" alt="1596630612189"></a></p>
+<p>类型是文档的逻辑容器,就像关系型数据库一样,表格是行的容器.类型中对于字段的定义称为映射,比如name映射为字符串类型.我们说文档是无模式的,他们不需要拥有映射中所定义的所有字段,比如新增一个字段,那么elasticsearch是怎么做的呢?</p>
+<p>elasticsearch会自动的将新的字段加入映射,但是这个字段的不确定它是什么类型,elasticsearch就开始猜,如果这个值是18,那么elasticsearch会认为他是整型.但是elasticsearch也可能猜不对,所有最安全的方式就是提前定义好所需要的映射,这点跟关系型数据库殊途同归了,先定义好字段,然后在使用,别整什么幺蛾子.</p>
+<blockquote>
+<p>索引</p>
+</blockquote>
+<p><strong>就是数据库</strong></p>
+<p>索引是映射类型的容器,elasticsearch中的索引是一个非常大的文档集合.索引存储了映射类型字段和其他设置,然后他们呗存储到了各个分片上了.我们来研究下分片是如何工作的.</p>
+<h3 id="物理设计-节点和分片-如何工作"><a href="#物理设计-节点和分片-如何工作" class="headerlink" title="物理设计: 节点和分片 如何工作"></a>物理设计: 节点和分片 如何工作</h3><p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596630840364.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596630840364.png" alt="1596630840364"></a></p>
+<p>一个集群至少要有一个节点,儿一个节点就是一个elasticsearch进程,节点可以有多个索引默认的,如果你创建索引,那么索引将会有5个分片(primary shard,又称主分片) 构成的,每个主分片会有一个副本(replica shard,又称复制分片)</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596630793639.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596630793639.png" alt="1596630793639"></a></p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596630870602.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596630870602.png" alt="1596630870602"></a></p>
+<blockquote>
+<p>倒排索引</p>
+</blockquote>
+<p>elasticsearch使用的是一种称为倒排索引的结构,采用Lucene倒排索引作为底层.这种结构适用于快速的全文搜索,一个索引由文档中所有不重复的列表构成,对于每一个词,都有一个包含它的文档列表.例如,现在有两个文档,每个文档包含如下内容.</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596631073200.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/07-elasticsearch-es%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3.assets/1596631073200.png" alt="1596631073200"></a></p>
+<p>为了创建倒排索引,我们首先要将每个文档拆分成独立的词(或称为词条或者tokens),然后创建一个包含所有不重复的词条的排序列表,然后列出每个词条出现在哪个文档:</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596631181270.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596631181270.png" alt="1596631181270"></a></p>
+<p>两个文档都匹配,但是第一个文档比第二个匹配程度更高.如果没有别的条件,现在,这两个包含关键字的文档都将返回.</p>
+<p>再来看一个示例,比如我们通过博客标签来搜索博客文章.那么倒排索引列表就是这样的一个结构:</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596631425757.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596631425757.png" alt="1596631425757"></a></p>
+<p>如果要搜索含有python标签的文章,那相对查找所有原始数据而言,查找倒排索引后的数据将会快的多.只需要查看标签这一栏,然后获取相关文章id即可.</p>
+<h1 id="IK分词器插件"><a href="#IK分词器插件" class="headerlink" title="IK分词器插件"></a>IK分词器插件</h1><h2 id="什么是分词器"><a href="#什么是分词器" class="headerlink" title="什么是分词器"></a><strong>什么是分词器</strong></h2><p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596637415868.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596637415868.png" alt="1596637415868"></a></p>
+<p><code>如果使用中文,建议使用ik分词器</code></p>
+<p>IK体用了两个分词算法:<code>ik_smart</code>和,其中ik_smart为最少(ˉ▽￣～) 切~~分,<code>ik_max_word</code>为最细粒度划分! 一会我们测试</p>
+<blockquote>
+<p>安装</p>
+</blockquote>
+<ol>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik%EF%BC%8C%E7%89%88%E6%9C%AC%E9%9C%80%E8%A6%81%E5%92%8CElasticSearch%E7%89%88%E6%9C%AC%E5%AF%B9%E5%BA%94">https://github.com/medcl/elasticsearch-analysis-ik，版本需要和ElasticSearch版本对应</a></p>
+</li>
+<li><p>下载完毕之后,放入到我们的elasticsearch插件即可</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/08-elasticsearch-IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%8F%92%E4%BB%B6.assets/1596637767841.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/08-elasticsearch-IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%8F%92%E4%BB%B6.assets/1596637767841.png" alt="1596637767841"></a></p>
+<ol>
+<li><p>重启观察ES</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674648793.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674648793.png" alt="1596674648793"></a></p>
+</li>
+<li><p>elasticsearch-plugin 可以通过这个命令来查看加载的插件</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674703775.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674703775.png" alt="1596674703775"></a></p>
+</li>
+<li><p>使用kibana测试!</p>
+<p>查看不同的分词器效果</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674979545.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596674979545.png" alt="1596674979545"></a></p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="ik分词器增加我们自己的配置"><a href="#ik分词器增加我们自己的配置" class="headerlink" title="ik分词器增加我们自己的配置"></a>ik分词器增加我们自己的配置</h2><p>这种自己需要的词,需要自己加到我们的分词器字典中!</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675349989.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675349989.png" alt="1596675349989"></a></p>
+<p>重启ES,看细节</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675426305.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675426305.png" alt="1596675426305"></a></p>
+<p>再次测试一下狂神说,</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675486318.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1596675486318.png" alt="1596675486318"></a></p>
+<p>以后的话我们需要自己配置自己的词,只需要在自定义的dic文件中进行配置即可!</p>
+<h1 id="Rest风格说明"><a href="#Rest风格说明" class="headerlink" title="Rest风格说明"></a>Rest风格说明</h1><p>一种软件架构风格,而不是标准,只是提供了一组设计原则和约束条件.它主要用于客户端和服务器交互类的软件.基于这个风格设计的软件可以更简洁,更有层次,更易于实现缓存等机制.</p>
+<p>基本Rest风格命令说明</p>
+<table><thead><tr><th>method</th><th>url地址</th><th>描述</th></tr></thead><tbody><tr><td>PUT</td><td>127.0.01:9200/索引名称/_create/文档id</td><td>创建文档（指定id）</td></tr><tr><td>POST</td><td>127.0.01:9200/索引名称/_doc</td><td>创建文档</td></tr><tr><td>POST</td><td>127.0.01:9200/索引名称/_update/文档id</td><td>修改文档</td></tr><tr><td>DELETE</td><td>127.0.01:9200/索引名称</td><td>删除索引</td></tr><tr><td>DELETE</td><td>127.0.01:9200/索引名称/_doc/文档id</td><td>删除文档</td></tr></tbody></table>
+
+<blockquote>
+<p>基础测试</p>
+</blockquote>
+<h2 id="关于索引的基本操作"><a href="#关于索引的基本操作" class="headerlink" title="关于索引的基本操作"></a>关于索引的基本操作</h2><h3 id="索引indices"><a href="#索引indices" class="headerlink" title="索引indices"></a>索引indices</h3><p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018173524585.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018173524585.png" alt="image-20201018173524585"></a></p>
+<h3 id="映射mapping"><a href="#映射mapping" class="headerlink" title="映射mapping"></a>映射mapping</h3><p>那么name这个字段用不用指定类型呢,毕竟我们关系型数据库 是需要指定类型映射的啊</p>
+<p><a target="_blank" rel="noopener" href="http://victorfengming.gitee.io/course/elasticsearch/base/09-elasticsearch-Rest%E9%A3%8E%E6%A0%BC.assets/1596676128844.png"><img src="http://victorfengming.gitee.io/course/elasticsearch/base/09-elasticsearch-Rest%E9%A3%8E%E6%A0%BC.assets/1596676128844.png" alt="1596676128844"></a></p>
+<ol>
+<li><p>指定字段的类型</p>
+<p>获得这个规则! 可通过GET请求获取具体的信息</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018174140347.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018174140347.png" alt="image-20201018174140347"></a></p>
+</li>
+<li><p>不给索引设置mapping的话，ElasticSearch会默认匹配；如果自己的文档字段没有指定,那么ES就会给我们配置字段类型</p>
+</li>
+</ol>
+<h1 id="关于文档的基本操作"><a href="#关于文档的基本操作" class="headerlink" title="关于文档的基本操作"></a>关于文档的基本操作</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17a4y1x7zq?p=10">https://www.bilibili.com/video/BV17a4y1x7zq?p=10</a></p>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a><strong>基本操作</strong></h2><ol>
+<li><p>添加数据</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018173524585.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018173524585.png" alt="image-20201018173524585"></a></p>
+</li>
+<li><p>获取数据</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891281730.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891281730.png" alt="1597891281730"></a></p>
+</li>
+<li><p>更新数据 PUT，更新时是覆盖更新，没有更新的字段会被覆盖为空！</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891378076.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891378076.png" alt="1597891378076"></a></p>
+</li>
+<li><p>Post _update,<code>推荐使用这种更新方式!</code></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891620183.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597891620183.png" alt="1597891620183"></a></p>
+</li>
+</ol>
+<h2 id="简单地搜索"><a href="#简单地搜索" class="headerlink" title="简单地搜索!"></a>简单地搜索!</h2><p><code>GET test/_doc/2</code></p>
+<p>简单的条件查询,可以根据默认的映射规则,产生基本的查询</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018175222885.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018175222885.png" alt="image-20201018175222885"></a> <a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892169142.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892169142.png" alt="1597892169142"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597974203192.png" alt="1597974203192"></a></p>
+<h2 id="复杂操作搜索"><a href="#复杂操作搜索" class="headerlink" title="复杂操作搜索"></a>复杂操作搜索</h2><blockquote>
+<p>select(排序,分页,高亮,模糊查询,精准查询! )</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892352276.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892352276.png" alt="1597892352276"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892367286.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892367286.png" alt="1597892367286"></a></p>
+<p>输出结果不想要那么多,<code>select *</code></p>
+<p>现在是<code>select name,age</code></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892385326.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892385326.png" alt="1597892385326"></a></p>
+<p>可以指定字段</p>
+<p>结果的过滤</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892451582.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892451582.png" alt="1597892451582"></a></p>
+<p>我们之后使用Java操作ES,所有的方法和对象就是这里面的key!</p>
+<blockquote>
+<p>排序</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892561417.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892561417.png" alt="1597892561417"></a></p>
+<blockquote>
+<p>分页查询</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892615017.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892615017.png" alt="1597892615017"></a></p>
+<p>数据下标还是从0开始,和之前所学的数据结构都是一样的!</p>
+<blockquote>
+<p>布尔值查询</p>
+</blockquote>
+<p>must(and) ,所有条件都要符合 where id=1 and name=xxx</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892730673.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892730673.png" alt="1597892730673"></a></p>
+<p>should (or) ,所有条件都要符合 where id=1 or name = xxx</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892885428.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892885428.png" alt="1597892885428"></a></p>
+<p>must not (not)</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892928930.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892928930.png" alt="1597892928930"></a></p>
+<p>过滤器 filter</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892996458.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597892996458.png" alt="1597892996458"></a></p>
+<ul>
+<li>  gt 大于</li>
+<li>  gte 大于等于</li>
+<li>  lt 小于</li>
+<li>  lte 小于等于</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893039013.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893039013.png" alt="1597893039013"></a></p>
+<p>匹配多个条件</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893096034.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893096034.png" alt="1597893096034"></a></p>
+<p>用空格分隔也行</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893131147.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893131147.png" alt="1597893131147"></a></p>
+<blockquote>
+<p>精确查询</p>
+</blockquote>
+<p>term 查询时直接通过倒排索引指定的词条进程精确查找的!</p>
+<p>关于分词:</p>
+<p>term,直接查询精确的</p>
+<p>match,会使用分词器解析! (先分析分档,然后再通过分析的分档进行查询! )</p>
+<p><strong>两个类型 text keyword</strong></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893556500.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893556500.png" alt="1597893556500"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893572562.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893572562.png" alt="1597893572562"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893648565.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597893648565.png" alt="1597893648565"></a></p>
+<blockquote>
+<p>多个值匹配精确查询</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597900914957.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597900914957.png" alt="1597900914957"></a></p>
+<blockquote>
+<p>高亮查询!</p>
+</blockquote>
+<p>搜索的高亮条件,会在HTML里面自动的加上标签</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597901143555.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597901143555.png" alt="1597901143555"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597905816361.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597905816361.png" alt="1597905816361"></a></p>
+<h1 id="集成SpringBoot"><a href="#集成SpringBoot" class="headerlink" title="集成SpringBoot"></a>集成SpringBoot</h1><blockquote>
+<p>找文档!</p>
+</blockquote>
+<p><del><a target="_blank" rel="noopener" href="https://proxies.app.aidoru.net/-----https://www.elastic.co/guide/index.html">https://proxies.app.aidoru.net/—–https://www.elastic.co/guide/index.html</a></del> <code>失效</code></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906806327.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906806327.png" alt="1597906806327"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906105998.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906105998.png" alt="1597906105998"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906924635.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597906924635.png" alt="img"></a></p>
+<ol>
+<li><p>找到原生的依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.elasticsearch.client<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>elasticsearch-rest-high-level-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>7.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<ol start="2">
+<li><p>找对象</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907115554.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907115554.png" alt="1597907115554"></a></p>
+</li>
+<li><p>分析这个类中的方法即可</p>
+<blockquote>
+<p>配置基本的项目</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907258818.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907258818.png" alt="1597907258818"></a></p>
+<blockquote>
+<p>问题:一定要保证我们导入的依赖和我们的ES版本一致</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907493787.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907493787.png" alt="1597907493787"></a></p>
+</li>
+</ol>
+<p>按照官网的操作我们要构建一个对象</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907737591.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597907737591.png" alt="1597907737591"></a></p>
+<p>分析源码</p>
+<p>狂神的Spring步骤:</p>
+<ol>
+<li><p>找对象</p>
+</li>
+<li><p>放到spring中待用</p>
+</li>
+<li><p>如果是springboot,那就先分析源码</p>
+<p>xxxAutoConfiguration,xxxProperties</p>
+</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597908504743.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/1597908504743.png" alt="1597908504743"></a></p>
+<p>源码中提供的对象</p>
+<p>虽然这里导入了3个类,静态内部类,核心类就一个</p>
+<h2 id="关于索引的API操作详解"><a href="#关于索引的API操作详解" class="headerlink" title="关于索引的API操作详解"></a>关于索引的API操作详解</h2><blockquote>
+<p>具体的Api测试!</p>
+</blockquote>
+<p><code>restHighLevelClient.indices().xxx()</code></p>
+<ol>
+<li><p>创建索引</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index create</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 构建索引请求实体类 就是创建索引时的&#123;&#125;</span></span><br><span class="line">    CreateIndexRequest springboot_index = <span class="keyword">new</span> CreateIndexRequest(<span class="string">&quot;springboot_index&quot;</span>);</span><br><span class="line">   </span><br><span class="line">    <span class="comment">// 2.执行创建索引请求,返回响应</span></span><br><span class="line">    CreateIndexResponse createIndexResponse =</span><br><span class="line">            restHighLevelClient.indices().create(springboot_index, RequestOptions.DEFAULT);</span><br><span class="line">   </span><br><span class="line">    System.out.println(createIndexResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>判断索引是否存在</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">getIndices</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">     <span class="comment">// 1. 创建请求体内容对象</span></span><br><span class="line">     GetIndexRequest srpingboot_index = <span class="keyword">new</span> GetIndexRequest(<span class="string">&quot;springboot_index&quot;</span>);</span><br><span class="line">   </span><br><span class="line">     <span class="comment">// 2. action</span></span><br><span class="line">     <span class="keyword">boolean</span> exists = restHighLevelClient.indices().exists(srpingboot_index,</span><br><span class="line">             RequestOptions.DEFAULT);</span><br><span class="line">     System.out.println(exists);</span><br><span class="line">     GetIndexResponse getIndexResponse = restHighLevelClient.indices().get(srpingboot_index,</span><br><span class="line">             RequestOptions.DEFAULT);</span><br><span class="line">     System.out.println(getIndexResponse);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>删除索引</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">deleteIndices</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 创建请求体内容对象,删除时索引需存在！</span></span><br><span class="line">    DeleteIndexRequest springboot_index = <span class="keyword">new</span> DeleteIndexRequest(<span class="string">&quot;springboot_index&quot;</span>);</span><br><span class="line">   </span><br><span class="line">    <span class="comment">// 2. action</span></span><br><span class="line">    AcknowledgedResponse delete = restHighLevelClient.indices().delete(springboot_index,</span><br><span class="line">            RequestOptions.DEFAULT);</span><br><span class="line">    System.out.println(delete.isAcknowledged());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ol>
+<h2 id="关于文档的API操作详解"><a href="#关于文档的API操作详解" class="headerlink" title="关于文档的API操作详解"></a>关于文档的API操作详解</h2><blockquote>
+<p>创建文档</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createDocument</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// put /index/_create/id &#123;...&#125;</span></span><br><span class="line">    <span class="comment">// 1. 构建创建的文档的内容</span></span><br><span class="line">    IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">&quot;springboot_index&quot;</span>);</span><br><span class="line">    indexRequest.timeout(<span class="string">&quot;1s&quot;</span>);</span><br><span class="line">    indexRequest.id(<span class="string">&quot;1&quot;</span>);</span><br><span class="line">    <span class="comment">// public IndexRequest source(String source, XContentType xContentType)</span></span><br><span class="line">    indexRequest.source(JSON.toJSONString(<span class="keyword">new</span> User(<span class="string">&quot;zxj&quot;</span>, <span class="number">18</span>)), XContentType.JSON);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 开始请求</span></span><br><span class="line">    IndexResponse index = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);</span><br><span class="line">    System.out.println(index.status());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>结果</p>
+<p>这里的返回的全部内容和我们的命令是一样的</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194243887.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194243887.png" alt="image-20201018194243887"></a></p>
+<blockquote>
+<p>更新文档信息</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">updateDocument</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="comment">// post /index/_update/id &#123;&quot;doc&quot;:&#123;...&#125;&#125;</span></span><br><span class="line">       <span class="comment">// 1. 构建修改的文档的内容,String index, String id</span></span><br><span class="line">       UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">&quot;springboot_index&quot;</span>, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">       updateRequest.timeout(<span class="string">&quot;1s&quot;</span>);</span><br><span class="line">       updateRequest.doc(JSON.toJSONString(<span class="keyword">new</span> User(<span class="string">&quot;new Name&quot;</span>, <span class="number">18</span>)), XContentType.JSON);</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 2. 开始请求</span></span><br><span class="line">       UpdateResponse updateResponse = restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);</span><br><span class="line">       System.out.println(updateResponse.status());</span><br><span class="line">       System.out.println(updateResponse.toString());</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194653575.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194653575.png" alt="image-20201018194653575"></a></p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194726197.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018194726197.png" alt="image-20201018194726197"></a></p>
+<blockquote>
+<p>删除文档记录</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">dropDocument</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">       <span class="comment">// delete /index/_doc/id</span></span><br><span class="line">       <span class="comment">// 1. 构建删除文档的对象,String index, String id</span></span><br><span class="line">       DeleteRequest deleteRequest = <span class="keyword">new</span> DeleteRequest(<span class="string">&quot;springboot_index&quot;</span>, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">       deleteRequest.timeout(<span class="string">&quot;1s&quot;</span>);</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 2. 开始请求</span></span><br><span class="line">       DeleteResponse delete = restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);</span><br><span class="line">       System.out.println(delete.status());</span><br><span class="line">       System.out.println(delete.toString());</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018195024638.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018195024638.png" alt="image-20201018195024638"></a></p>
+<h3 id="批量操作"><a href="#批量操作" class="headerlink" title="批量操作"></a>批量操作</h3><blockquote>
+<p>特殊的,真的项目一般都会批量插入数据</p>
+</blockquote>
+<p>批量操作bulkRequest有很多类型：例如下述。这里只展示批量增加</p>
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018195851648.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201018195851648.png" alt="image-20201018195851648"></a></p>
+<p>批量添加文档：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bulgRequest</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 构建批量请求体</span></span><br><span class="line">    BulkRequest bulkRequest = <span class="keyword">new</span> BulkRequest();</span><br><span class="line">    bulkRequest.timeout(<span class="string">&quot;10s&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">&quot;springboot_index&quot;</span>);</span><br><span class="line">        indexRequest.source(JSON.toJSONString(<span class="keyword">new</span> User(<span class="string">&quot;zxj&quot;</span>+i, <span class="number">18</span>)), XContentType.JSON);</span><br><span class="line">        bulkRequest.add(indexRequest);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);</span><br><span class="line">    System.out.println(!bulk.hasFailures());</span><br><span class="line">    System.out.println(bulk.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="查询搜索🔺"><a href="#查询搜索🔺" class="headerlink" title="查询搜索🔺"></a>查询搜索🔺</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;search/&#123;key&#125;/&#123;page&#125;/&#123;size&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; searchLists(<span class="meta">@PathVariable(&quot;key&quot;)</span> String keyword,</span><br><span class="line">                                             <span class="meta">@PathVariable(&quot;page&quot;)</span> Long page, <span class="meta">@PathVariable(</span></span><br><span class="line"><span class="meta">                                                     &quot;size&quot;)</span> Long size) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="comment">// 构建搜索对象</span></span><br><span class="line">    SearchRequest searchRequest = <span class="keyword">new</span> SearchRequest(<span class="string">&quot;jd1&quot;</span>);</span><br><span class="line">    <span class="comment">// 搜索条件构造</span></span><br><span class="line">    SearchSourceBuilder searchSourceBuilder = <span class="keyword">new</span> SearchSourceBuilder();</span><br><span class="line">    searchSourceBuilder.timeout(<span class="keyword">new</span> TimeValue(<span class="number">2L</span>, TimeUnit.SECONDS));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 匹配查询</span></span><br><span class="line">    MatchQueryBuilder title = QueryBuilders.matchQuery(<span class="string">&quot;title&quot;</span>, keyword);</span><br><span class="line">    searchSourceBuilder.query(title);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// page</span></span><br><span class="line">    <span class="keyword">if</span> (page&lt;=<span class="number">1L</span>)&#123;</span><br><span class="line">        page = <span class="number">1L</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    searchSourceBuilder.from((<span class="keyword">int</span>) (page * size));</span><br><span class="line">    searchSourceBuilder.size(Math.toIntExact(size));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// highlight</span></span><br><span class="line">    HighlightBuilder highlightBuilder = <span class="keyword">new</span> HighlightBuilder();</span><br><span class="line">    highlightBuilder.field(<span class="string">&quot;title&quot;</span>); <span class="comment">// title字段高亮</span></span><br><span class="line">    highlightBuilder.requireFieldMatch(<span class="keyword">false</span>); <span class="comment">// 关键字高亮一次</span></span><br><span class="line">    highlightBuilder.preTags(<span class="string">&quot;&lt;span style=&#x27;color:red&#x27;&gt;&quot;</span>);</span><br><span class="line">    highlightBuilder.postTags(<span class="string">&quot;&lt;/span&gt;&quot;</span>);</span><br><span class="line">    searchSourceBuilder.highlighter(highlightBuilder);</span><br><span class="line"></span><br><span class="line">    searchRequest.source(searchSourceBuilder);</span><br><span class="line"></span><br><span class="line">    ArrayList&lt;Map&lt;String, Object&gt;&gt; objects = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);</span><br><span class="line">    <span class="keyword">for</span> (SearchHit hit : searchResponse.getHits().getHits()) &#123;</span><br><span class="line">        <span class="comment">// 查询结果</span></span><br><span class="line">        Map&lt;String, Object&gt; sourceAsMap = hit.getSourceAsMap();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将高亮的字段覆盖查询结果的该字段</span></span><br><span class="line">        HighlightField highlightField = hit.getHighlightFields().get(<span class="string">&quot;title&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (highlightField != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Text[] fragments = highlightField.fragments();</span><br><span class="line">            StringBuilder s = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">            <span class="keyword">for</span> (Text fragment : fragments) &#123;</span><br><span class="line">                s.append(fragment);</span><br><span class="line">            &#125;</span><br><span class="line">            sourceAsMap.put(<span class="string">&quot;title&quot;</span>, s.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        objects.add(sourceAsMap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> objects;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><a target="_blank" rel="noopener" href="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201020213945227.png"><img src="https://zxj-typora.oss-cn-shanghai.aliyuncs.com/img/image-20201020213945227.png" alt="image-20201020213945227"></a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>作者:</span>
+                        <span>Ityoung</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>本站链接:</span>
+                        <span><a href="http://www.jiuyuesheng.top/posts/51878/">http://www.jiuyuesheng.top/posts/51878/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>执照:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+				<!--
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+				-->
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>标签:</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/StudyNote/"><i class="iconfont icon-githubiconfont icon-tags"></i>StudyNote</a>
+                    
+                        <a href="/tags/NoSQL/"><i class="iconfont icon-githubiconfont icon-tags"></i>NoSQL</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回</a>
+                <span>· </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/19457/">SpringBoot笔记</a>
+            
+            
+            <a class="next" rel="next" href="/posts/46706/">Redis从零基础到入门</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Powered by Ityoung</span>
+		
+			<br/>
+			
+
+	<span id="busuanzi_container_site_pv">
+		总访问量:
+		<span id="busuanzi_value_site_pv"></span>
+	</span>
+
+
+	<span id="busuanzi_container_site_uv">
+		总访客量:
+		<span  id="busuanzi_value_site_uv"></span>
+	</span>&nbsp;
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		
+	</div>
+	
+</footer>
+
+    </div>
+</body>
+</html>
