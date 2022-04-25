@@ -208,7 +208,7 @@
 	<i class="fa fa-keyboard-o"></i>
 	<span class="post-meta-item-text">  字数统计: </span>
 	<!-- 安装插件npm install hexo-wordcount --save -->
-	<span class="post-count" style="color: #2d96bd">2.4k</span>字
+	<span class="post-count" style="color: #2d96bd">2.5k</span>字
   </span>
 </span>
 
@@ -216,7 +216,7 @@
   <span class="post-meta-item-icon">
 	<i class="fa fa-hourglass-half"></i>
 	<span class="post-meta-item-text">  阅读时长: </span>
-	<span class="post-count" style="color: #2d96bd">9</span>分
+	<span class="post-count" style="color: #2d96bd">10</span>分
   </span>
 </span>
 
@@ -231,89 +231,89 @@
         <div class="post-content">
             <h2 id="Redis常用五大类型-操作命令"><a href="#Redis常用五大类型-操作命令" class="headerlink" title="Redis常用五大类型(操作命令)"></a>Redis常用五大类型(操作命令)</h2><p><a target="_blank" rel="noopener" href="http://www.redis.cn/commands.html">redis操作命令</a></p>
 <h3 id="Redis键（keys）"><a href="#Redis键（keys）" class="headerlink" title="Redis键（keys）"></a>Redis键（keys）</h3><ul>
-<li>==keys *== 查看当前库所有key    (匹配：keys <em>param，\</em>类似于展位符号)</li>
-<li>==exists key== 判断某个key是否存在</li>
-<li>==type key== 查看你的key是什么类型</li>
-<li>==rename key newkey== 将一个key重新命名，newkey存在会覆盖</li>
-<li>==renamenx key newkey== 当且仅当 newkey 不存在时，将 key 改名为 newkey </li>
-<li>==del key==    删除指定的key数据</li>
-<li>==move key db==  将当前数据库的 key 移动到给定的数据库 db 当中</li>
-<li>==unlink key==   根据value选择非阻塞删除，仅将keys从keyspace元数据中删除，真正的删除会在后续异步操作</li>
-<li>==expire key 10==  为给定的key设置过期时间（expire 秒，pexpire 毫秒）</li>
-<li>==ttl key==    查看还有多少时间过期，-1表示永不过期，-2表示已过期 （ttl 秒，pttl 毫秒）</li>
-<li>==persist key== 移除给定key的生存时间。当生存时间移除成功时，返回 1 .如果 key 不存在或 key 没有设置生存时间，返回 0 </li>
-<li>==select==    命令切换数据库</li>
-<li>==dbsize==   查看当前数据库的key的数量</li>
-<li>==flushdb==   清空当前库</li>
-<li>==flushall==   通杀全部库</li>
+<li><code>keys *</code> 查看当前库所有key    (匹配：keys <em>param，\</em>类似于展位符号)</li>
+<li><code>exists key</code> 判断某个key是否存在</li>
+<li><code>type key</code> 查看你的key是什么类型</li>
+<li><code>rename key newkey</code> 将一个key重新命名，newkey存在会覆盖</li>
+<li><code>renamenx key newkey</code> 当且仅当 newkey 不存在时，将 key 改名为 newkey </li>
+<li><code>del key</code>    删除指定的key数据</li>
+<li><code>move key db</code>  将当前数据库的 key 移动到给定的数据库 db 当中</li>
+<li><code>unlink key</code>   根据value选择非阻塞删除，仅将keys从keyspace元数据中删除，真正的删除会在后续异步操作</li>
+<li><code>expire key 10</code>  为给定的key设置过期时间（expire 秒，pexpire 毫秒）</li>
+<li><code>ttl key</code>    查看还有多少时间过期，-1表示永不过期，-2表示已过期 （ttl 秒，pttl 毫秒）</li>
+<li><code>persist key</code> 移除给定key的生存时间。当生存时间移除成功时，返回 1 .如果 key 不存在或 key 没有设置生存时间，返回 0 </li>
+<li><code>select</code>    命令切换数据库</li>
+<li><code>dbsize</code>   查看当前数据库的key的数量</li>
+<li><code>flushdb</code>   清空当前库</li>
+<li><code>flushall</code>   通杀全部库</li>
 </ul>
 <h3 id="Redis字符串（String）"><a href="#Redis字符串（String）" class="headerlink" title="Redis字符串（String）"></a>Redis字符串（String）</h3><ul>
-<li>==set key value [EX seconds] [PX milliseconds] [NX|XX]==  将键key设定为指定的“字符串”值。<ul>
+<li><code>set key value [EX seconds] [PX milliseconds] [NX|XX]</code>  将键key设定为指定的“字符串”值。<ul>
 <li><code>EX</code> <em>seconds</em> – 设置键key的过期时间，单位时秒</li>
 <li><code>PX</code> <em>milliseconds</em> – 设置键key的过期时间，单位时毫秒</li>
 <li><code>NX</code> – 只有键key不存在的时候才会设置key的值</li>
 <li><code>XX</code> – 只有键key存在的时候才会设置key的值</li>
 </ul>
 </li>
-<li>==SETRANGE key offset value==  <ul>
+<li><code>SETRANGE key offset value</code>  <ul>
 <li>这个命令的作用是覆盖key对应的string的一部分，从指定的offset处开始，覆盖value的长度。如果offset比当前key对应string还要长，还是在key的末尾追加。不存在的keys被认为是空字符串，所以这个命令可以确保key有一个足够大的字符串，能在offset处设置value。</li>
 </ul>
 </li>
-<li>==get key==  <ul>
+<li><code>get key</code>  <ul>
 <li>返回key的value。如果key不存在，返回特殊值nil。如果ke的value不是string，就返回错误，因为GET只处理string类型的values。</li>
 </ul>
 </li>
-<li>==GETSET key value== <ul>
+<li><code>GETSET key value</code> <ul>
 <li>自动将key对应到value并且返回原来key对应的value。如果key存在但是对应的value不是字符串，就返回错误。</li>
 </ul>
 </li>
-<li>==MSET key value [key value …]== <ul>
+<li><code>MSET key value [key value ...]</code> <ul>
 <li>对应给定的keys到他们相应的values上。<code>MSET</code>会用新的value替换已经存在的value，就像普通的<a target="_blank" rel="noopener" href="http://www.redis.cn/commands/set.html">SET</a>命令一样。</li>
 </ul>
 </li>
-<li>==MSETNX key value [key value …]==  <ul>
+<li><code>MSETNX key value [key value ...]</code>  <ul>
 <li>对应给定的keys到他们相应的values上。只要有一个key已经存在，<code>MSETNX</code>一个操作都不会执行。</li>
 </ul>
 </li>
-<li>==MGET key [key …]== <ul>
+<li><code>MGET key [key ...]</code> <ul>
 <li>返回所有指定的key的value。对于每个不对应string或者不存在的key，都返回特殊值nil。正因为此，这个操作从来不会失败。</li>
 </ul>
 </li>
-<li>==APPEND key value== <ul>
+<li><code>APPEND key value</code> <ul>
 <li>如果 key 已经存在，并且值为字符串，那么这个命令会把 value追加到原来值（value）的结尾。 如果 key不存在，那么它将首先创建一个空字符串的key，再执行追加操作。</li>
 </ul>
 </li>
 <li>key的自增自减（原子性）<ul>
-<li>==DECR key==  对key对应的数字做减1操作。如果key不存在，那么在操作之前，这个key对应的值会被置为0。如果key有一个错误类型的value或者是一个不能表示成数字的字符串，就返回错误。这个操作最大支持在64位有符号的整型数字。</li>
-<li>==DECRBY key decrement== </li>
-<li>==INCR key==</li>
-<li>==INCRBY key increment==</li>
-<li>==INCRBYFLOAT key increment==</li>
+<li><code>DECR key</code>  对key对应的数字做减1操作。如果key不存在，那么在操作之前，这个key对应的值会被置为0。如果key有一个错误类型的value或者是一个不能表示成数字的字符串，就返回错误。这个操作最大支持在64位有符号的整型数字。</li>
+<li><code>DECRBY key decrement</code> </li>
+<li><code>INCR key</code></li>
+<li><code>INCRBY key increment</code></li>
+<li><code>INCRBYFLOAT key increment</code></li>
 </ul>
 </li>
 </ul>
 <h3 id="Redis列表（List）"><a href="#Redis列表（List）" class="headerlink" title="Redis列表（List）"></a>Redis列表（List）</h3><ul>
-<li><p>==LPUSH/RPUSH key value [value …]==  </p>
+<li><p><code>LPUSH/RPUSH key value [value ...]</code>  </p>
 <ul>
 <li>将所有指定的值插入到存于 key 的列表的头部。如果 key 不存在，那么在进行 push 操作前会创建一个空列表。 如果 key 对应的值不是一个 list 的话，那么会返回一个错误。</li>
 </ul>
 </li>
-<li><p>==LPUSHX/RPUSHX key value== </p>
+<li><p><code>LPUSHX/RPUSHX key value</code> </p>
 <ul>
 <li>只有当 key 已经存在并且存着一个 list 的时候，在这个 key 下面的 list 的头部插入 value。 与 LPUSH 相反，当 key 不存在的时候不会进行任何操作。</li>
 </ul>
 </li>
-<li><p>==LINSERT key BEFORE|AFTER pivot value== </p>
+<li><p><code>LINSERT key BEFORE|AFTER pivot value</code> </p>
 <ul>
 <li>把 value 插入存于 key 的列表中在基准值 pivot 的前面或后面。当 key 不存在时，这个list会被看作是空list，任何操作都不会发生。当 key 存在，但保存的不是一个list的时候，会返回error。</li>
 </ul>
 </li>
-<li><p>==LPOP/RPOP key== </p>
+<li><p><code>LPOP/RPOP key</code> </p>
 <ul>
 <li>移除并且返回 key 对应的 list 的第一个元素。</li>
 </ul>
 </li>
-<li><p>==RPOPLPUSH source destination==</p>
+<li><p><code>RPOPLPUSH source destination</code></p>
 <ul>
 <li><p>原子性地返回并移除存储在 source 的列表的最后一个元素（列表尾部元素）， 并把该元素放入存储在 destination 的列表的第一个元素位置（列表头部）。</p>
 <p>例如：假设 source 存储着列表 a,b,c， destination存储着列表 x,y,z。 执行 RPOPLPUSH 得到的结果是 source 保存着列表 a,b ，而 destination 保存着列表 c,x,y,z。</p>
@@ -321,23 +321,23 @@
 </li>
 </ul>
 </li>
-<li><p>==LINDEX key index==</p>
+<li><p><code>LINDEX key index</code></p>
 <ul>
 <li><p>返回列表里的元素的索引 index 存储在 key 里面。 下标是从0开始索引的，所以 0 是表示第一个元素， 1 表示第二个元素，并以此类推。 负数索引用于指定从列表尾部开始索引的元素。在这种方法下，-1 表示最后一个元素，-2 表示倒数第二个元素，并以此往前推。</p>
 <p>当 key 位置的值不是一个列表的时候，会返回一个error。</p>
 </li>
 </ul>
 </li>
-<li><p>==LLEN key==  返回存储在 key 里的list的长度。 如果 key 不存在，那么就被看作是空list，并且返回长度为 0。 当存储在 key 里的值不是一个list的话，会返回error。</p>
+<li><p><code>LLEN key</code>  返回存储在 key 里的list的长度。 如果 key 不存在，那么就被看作是空list，并且返回长度为 0。 当存储在 key 里的值不是一个list的话，会返回error。</p>
 </li>
-<li><p>==LRANGE key start stop==</p>
+<li><p><code>LRANGE key start stop</code></p>
 <ul>
 <li><p>返回存储在 key 的列表里指定范围内的元素。 start 和 end 偏移量都是基于0的下标，即list的第一个元素下标是0（list的表头），第二个元素下标是1，以此类推。</p>
 <p>偏移量也可以是负数，表示偏移量是从list尾部开始计数。 例如， -1 表示列表的最后一个元素，-2 是倒数第二个，以此类推。</p>
 </li>
 </ul>
 </li>
-<li><p>==LREM key count value==</p>
+<li><p><code>LREM key count value</code></p>
 <ul>
 <li>从存于 key 的列表里移除前 count 次出现的值为 value 的元素。 这个 count 参数通过下面几种方式影响这个操作：<ul>
 <li>count &gt; 0: 从头往尾移除值为 value 的元素。</li>
@@ -348,59 +348,59 @@
 <li>比如， LREM list -2 “hello” 会从存于 list 的列表里移除最后两个出现的 “hello”。需要注意的是，如果list里没有存在key就会被当作空list处理，所以当 key 不存在的时候，这个命令会返回 0。</li>
 </ul>
 </li>
-<li><p>==LSET key index value==</p>
+<li><p><code>LSET key index value</code></p>
 <ul>
 <li>设置 index 位置的list元素的值为 value。</li>
 </ul>
 </li>
-<li><p>==LTRIM key start stop== </p>
+<li><p><code>LTRIM key start stop</code> </p>
 <ul>
 <li>修剪(trim)一个已存在的 list，这样 list 就会只包含指定范围的指定元素。start 和 stop 都是由0开始计数的， 这里的 0 是列表里的第一个元素（表头），1 是第二个元素，以此类推。</li>
 </ul>
 </li>
-<li><p>==BLPOP/BRPOP key [key …] timeout== （<a target="_blank" rel="noopener" href="http://www.redis.cn/commands/blpop.html">详细说明</a>）</p>
+<li><p><code>BLPOP/BRPOP key [key ...] timeout</code> （<a target="_blank" rel="noopener" href="http://www.redis.cn/commands/blpop.html">详细说明</a>）</p>
 </li>
-<li><p>==BRPOPLPUSH source destination timeout==</p>
+<li><p><code>BRPOPLPUSH source destination timeout</code></p>
 <ul>
 <li><code>BRPOPLPUSH</code> 是 <a target="_blank" rel="noopener" href="http://www.redis.cn/commands/rpoplpush.html">RPOPLPUSH</a> 的阻塞版本。 当 source 包含元素的时候，这个命令表现得跟 <a target="_blank" rel="noopener" href="http://www.redis.cn/commands/rpoplpush.html">RPOPLPUSH</a> 一模一样。 当 source 是空的时候，Redis将会阻塞这个连接，直到另一个客户端 push 元素进入或者达到 timeout 时限。 timeout 为 0 能用于无限期阻塞客户端。</li>
 </ul>
 </li>
 </ul>
 <h3 id="Redis集合（Set）"><a href="#Redis集合（Set）" class="headerlink" title="Redis集合（Set）"></a>Redis集合（Set）</h3><ul>
-<li>==SADD <key><value1><value2>== <ul>
+<li><code>SADD &lt;key&gt;&lt;value1&gt;&lt;value2&gt;</code> <ul>
 <li>将一个或多个 member 元素加入到集合 key 中，已经存在的 member 元素将被忽略</li>
 </ul>
 </li>
-<li>==SMEMBERS <key>==取出该集合的所有值。</li>
-<li>==SISMEMBER <key><value>== 判断集合<key>是否为含有该<value>值，有1，没有0</li>
-<li>==SCARD <key>==返回该集合的元素个数。</li>
-<li>==SREM <key><value1><value2>==  删除集合中的某个元素。</li>
-<li>==SPOP <key>== 随机从该集合中吐出一个值。</li>
-<li>==SRANDMEMBER <key><n>== 随机从该集合中取出n个值。不会从集合中删除 。</li>
-<li>==SMOVE <source><destination> value== 把集合中一个值从一个集合移动到另一个集合</li>
-<li>==SINTER <key1><key2>== 返回两个集合的<code>交集</code>元素。</li>
-<li>==SUNION <key1><key2>==  返回两个集合的<code>并集</code>元素。</li>
-<li>==SDIFF <key1><key2>==  返回两个集合的<code>差集</code>元素(key1中的，不包含key2中的)</li>
+<li><code>SMEMBERS &lt;key&gt;</code>取出该集合的所有值。</li>
+<li><code>SISMEMBER &lt;key&gt;&lt;value&gt;</code> 判断集合<key>是否为含有该<value>值，有1，没有0</li>
+<li><code>SCARD &lt;key&gt;</code>返回该集合的元素个数。</li>
+<li><code>SREM &lt;key&gt;&lt;value1&gt;&lt;value2&gt;</code>  删除集合中的某个元素。</li>
+<li><code>SPOP &lt;key&gt;</code> 随机从该集合中吐出一个值。</li>
+<li><code>SRANDMEMBER &lt;key&gt;&lt;n&gt;</code> 随机从该集合中取出n个值。不会从集合中删除 。</li>
+<li><code>SMOVE &lt;source&gt;&lt;destination&gt; value</code> 把集合中一个值从一个集合移动到另一个集合</li>
+<li><code>SINTER &lt;key1&gt;&lt;key2&gt;</code> 返回两个集合的<code>交集</code>元素。</li>
+<li><code>SUNION &lt;key1&gt;&lt;key2&gt;</code>  返回两个集合的<code>并集</code>元素。</li>
+<li><code>SDIFF &lt;key1&gt;&lt;key2&gt;</code>  返回两个集合的<code>差集</code>元素(key1中的，不包含key2中的)</li>
 </ul>
 <h3 id="Redis哈希（Hash）"><a href="#Redis哈希（Hash）" class="headerlink" title="Redis哈希（Hash）"></a>Redis哈希（Hash）</h3><ul>
-<li>==HSET  <key><field><value>==给<key>集合中的  <field>键赋值<value></li>
-<li>==HGET <key1><field>==从<key1>集合<field>取出 value </li>
-<li>==HMSET <key1><field1><value1><field2><value2>==批量设置hash的值</li>
-<li>==HEXISTS <key1><field>==查看哈希表 key 中，给定域 field 是否存在。</li>
-<li>==HKEYS <key>==列出该hash集合的所有field</li>
-<li>==HVALS <key>==列出该hash集合的所有value</li>
-<li>==HINCRBY <key><field><increment>==为哈希表 key 中的域 field 的值加上增量 1 -1</li>
-<li>==HSETNX <key><field><value>==将哈希表 key 中的域 field 的值设置为 value ，当且仅当域 field 不存在 .</li>
+<li><code>HSET  &lt;key&gt;&lt;field&gt;&lt;value&gt;</code>给<key>集合中的  <field>键赋值<value></li>
+<li><code>HGET &lt;key1&gt;&lt;field&gt;</code>从<key1>集合<field>取出 value </li>
+<li><code>HMSET &lt;key1&gt;&lt;field1&gt;&lt;value1&gt;&lt;field2&gt;&lt;value2&gt;</code>批量设置hash的值</li>
+<li><code>HEXISTS &lt;key1&gt;&lt;field&gt;</code>查看哈希表 key 中，给定域 field 是否存在。</li>
+<li><code>HKEYS &lt;key&gt;</code>列出该hash集合的所有field</li>
+<li><code>HVALS &lt;key&gt;</code>列出该hash集合的所有value</li>
+<li><code>HINCRBY &lt;key&gt;&lt;field&gt;&lt;increment&gt;</code>为哈希表 key 中的域 field 的值加上增量 1 -1</li>
+<li><code>HSETNX &lt;key&gt;&lt;field&gt;&lt;value&gt;</code>将哈希表 key 中的域 field 的值设置为 value ，当且仅当域 field 不存在 .</li>
 </ul>
 <h3 id="Redis有序集合（Zset）"><a href="#Redis有序集合（Zset）" class="headerlink" title="Redis有序集合（Zset）"></a>Redis有序集合（Zset）</h3><ul>
-<li>==ZADD  <key><score1><value1><score2><value2>…==将一个或多个 member 元素及其 score 值加入到有序集 key 当中。</li>
-<li>==ZRANGE <key><start><stop>  [WITHSCORES]== 返回有序集 key 中，下标在<start><stop>之间的元素带WITHSCORES，可以让分数一起和值返回到结果集。</li>
-<li>==ZRANGEBYSCORE key minmax [withscores] [limit offset count]== 返回有序集 key 中，所有 score 值介于 min 和 max 之间(包括等于 min 或 max )的成员。有序集成员按 score 值递增(从小到大)次序排列。 </li>
-<li>==zrevrangebyscore key maxmin [withscores] [limit offset count]== 同上，改为从大到小排</li>
-<li>==ZINCRBY <key><increment><value>==   为元素的score加上增量</li>
-<li>==ZREM  <key><value>==删除该集合下，指定值的元素 </li>
-<li>==ZCOUNT <key><min><max>==统计该集合，分数区间内的元素个数 </li>
-<li>==ZRANK <key><value>==返回该值在集合中的排名，从0开始。</li>
+<li><code>ZADD  &lt;key&gt;&lt;score1&gt;&lt;value1&gt;&lt;score2&gt;&lt;value2&gt;…</code>将一个或多个 member 元素及其 score 值加入到有序集 key 当中。</li>
+<li><code>ZRANGE &lt;key&gt;&lt;start&gt;&lt;stop&gt;  [WITHSCORES]</code> 返回有序集 key 中，下标在<start><stop>之间的元素带WITHSCORES，可以让分数一起和值返回到结果集。</li>
+<li><code>ZRANGEBYSCORE key minmax [withscores] [limit offset count]</code> 返回有序集 key 中，所有 score 值介于 min 和 max 之间(包括等于 min 或 max )的成员。有序集成员按 score 值递增(从小到大)次序排列。 </li>
+<li><code>zrevrangebyscore key maxmin [withscores] [limit offset count]</code> 同上，改为从大到小排</li>
+<li><code>ZINCRBY &lt;key&gt;&lt;increment&gt;&lt;value&gt;</code>   为元素的score加上增量</li>
+<li><code>ZREM  &lt;key&gt;&lt;value&gt;</code>删除该集合下，指定值的元素 </li>
+<li><code>ZCOUNT &lt;key&gt;&lt;min&gt;&lt;max&gt;</code>统计该集合，分数区间内的元素个数 </li>
+<li><code>ZRANK &lt;key&gt;&lt;value&gt;</code>返回该值在集合中的排名，从0开始。</li>
 </ul>
 
         </div>
