@@ -283,8 +283,8 @@
 <p>2.大数据量高性能(Redis一秒写8万次 ,读取11万次,NoSQL的缓存,是一种细粒度的缓存,性能会比较高)</p>
 <p>3.数据类型是多样型的!(不需要事先设计数据库!随取随用!如果数据量十分大的表,很多人都无法设计)</p>
 <p>4.传统的RDBMS和NoSQL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">传统的RDBMS</span><br><span class="line">-结构化组织</span><br><span class="line">-数据和关系都存在单独的表中</span><br><span class="line">-操作操作数据定义语言</span><br><span class="line">-严格的一致性</span><br><span class="line">-基础的事务</span><br><span class="line">-....</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NoSQL</span><br><span class="line">-不仅仅是数据</span><br><span class="line">-没有固定的查询语言</span><br><span class="line">-键值对存储,列存储,文档存储,图形数据库(社交关系)</span><br><span class="line">-最终一致性</span><br><span class="line">-CAP定理 和 BASE定理(异地多活!)</span><br><span class="line">-三高问题 高性能,高可用,高可扩</span><br><span class="line">-...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">传统的RDBMS</span><br><span class="line">-结构化组织</span><br><span class="line">-数据和关系都存在单独的表中</span><br><span class="line">-操作操作数据定义语言</span><br><span class="line">-严格的一致性</span><br><span class="line">-基础的事务</span><br><span class="line">-....</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NoSQL</span><br><span class="line">-不仅仅是数据</span><br><span class="line">-没有固定的查询语言</span><br><span class="line">-键值对存储,列存储,文档存储,图形数据库(社交关系)</span><br><span class="line">-最终一致性</span><br><span class="line">-CAP定理 和 BASE定理(异地多活!)</span><br><span class="line">-三高问题 高性能,高可用,高可扩</span><br><span class="line">-...</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>了解3V和3高</strong></p>
 </blockquote>
@@ -370,7 +370,7 @@
 <li>下载安装包 </li>
 <li>解压Redis的安装包!程序一般放在/opt中 </li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar-zxvf redis </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar-zxvf redis </span><br></pre></td></tr></table></figure>
 <p>3.安装基本的环境</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc-c++</span><br><span class="line"></span><br><span class="line">make</span><br><span class="line"></span><br><span class="line"><span class="comment">###提示 redis6需要升级gcc</span></span><br><span class="line"><span class="comment">#升级到 5.3及以上版本</span></span><br><span class="line">yum -y install centos-release-scl</span><br><span class="line">yum -y install devtoolset-9-gcc devtoolset-9-gcc-c++ devtoolset-9-binutils</span><br><span class="line"> </span><br><span class="line">scl <span class="built_in">enable</span> devtoolset-9 bash</span><br><span class="line"> </span><br><span class="line"><span class="comment">#注意：scl命令启用只是临时的，推出xshell或者重启就会恢复到原来的gcc版本。</span></span><br><span class="line"><span class="comment">#如果要长期生效的话，执行如下：</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;source /opt/rh/devtoolset-9/enable&quot;</span> &gt;&gt;/etc/profile</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在make测试一下</span><br><span class="line"></span><br><span class="line">最后make install 一下</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20201231171808.png" alt="image-20201127190207979"></p>
@@ -1480,14 +1480,14 @@
 <p>多哨兵模式</p>
 <p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20201231192559.png" alt="image-20201216180033114"></p>
 <p>哨兵的核心配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor mymaster 127.0.0.1 6379 1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sentinel monitor mymaster 127.0.0.1 6379 1</span><br></pre></td></tr></table></figure>
 <ul>
 <li>数字1表示 ：当一个哨兵主观认为主机断开，就可以客观认为主机故障，然后开始选举新的主机。</li>
 </ul>
 <blockquote>
 <p>测试</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel xxx&#x2F;sentinel.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel xxx/sentinel.conf</span><br></pre></td></tr></table></figure>
 <p>成功启动哨兵模式</p>
 <p><img src="https://cdn.jsdelivr.net/gh/ityoung09/image@main/20201231192648.png" alt="image-20201231192648527"></p>
 <p>此时哨兵监视着我们的主机6379，当我们断开主机后：</p>
@@ -1600,9 +1600,9 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/StudyNote/"><i class="iconfont icon-githubiconfont icon-tags"></i>StudyNote</a>
-                    
                         <a href="/tags/NoSQL/"><i class="iconfont icon-githubiconfont icon-tags"></i>NoSQL</a>
+                    
+                        <a href="/tags/StudyNote/"><i class="iconfont icon-githubiconfont icon-tags"></i>StudyNote</a>
                     
                         
                 </span>
@@ -1615,7 +1615,7 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/posts/51878/">ElasticSearch 7.x笔记</a>
+                <a class="prev" rel="prev" href="/posts/16107/">Hello World</a>
             
             
             <a class="next" rel="next" href="/posts/45960/">MySQL基本使用</a>

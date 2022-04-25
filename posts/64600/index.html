@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Ityoung">
+
+
+
+
+
+<title>lambda表达式的使用 | 谢谢你这么好看还来访问我的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="谢谢你这么好看还来访问我的博客" type="application/atom+xml">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/link">友链</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">展开目录</a>
+        <a onclick="go_top()">返回顶部</a>
+        <a onclick="go_bottom()">到达尾部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">lambda表达式的使用</h1>
+            
+                <div class="post-meta">
+                    
+                        作者: <a itemprop="author" rel="author" href="/">Ityoung</a>
+                    
+
+                    
+                        <span class="post-time">
+                        发布时间: <a href="#">2022-04-25&nbsp;&nbsp;09:55:20</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    分类:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+					<br/>
+					<!-- 开始添加字数统计-->
+					
+						
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-keyboard-o"></i>
+	<span class="post-meta-item-text">  字数统计: </span>
+	<!-- 安装插件npm install hexo-wordcount --save -->
+	<span class="post-count" style="color: #2d96bd">1.4k</span>字
+  </span>
+</span>
+
+<span class="post-time">
+  <span class="post-meta-item-icon">
+	<i class="fa fa-hourglass-half"></i>
+	<span class="post-meta-item-text">  阅读时长: </span>
+	<span class="post-count" style="color: #2d96bd">6</span>分
+  </span>
+</span>
+
+					
+					<!-- 添加完成 -->
+                </div>
+            
+			<span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span> visits</span>
+			
+        </header>
+
+        <div class="post-content">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>竹密无妨溪水过，天高不碍白云飞</strong></p>
+<p><strong>觉得有收获，希望帮忙点赞，转发下哈，谢谢，谢谢</strong></p>
+<p>我们日常工作中，Lambda 使用比较多的场景，就是集合类下的 Lambda 流操作，往往几行代码可以帮助我们实现复杂代码</p>
+<p>接下来我们把 Lambda 流的常用方法用案列讲解一下。</p>
+<h4 id="ForEach"><a href="#ForEach" class="headerlink" title="ForEach"></a>ForEach</h4><p>集合的遍历forEach方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void testForEach()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line"></span><br><span class="line">        list.forEach(s-&gt; System.out.println(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Collect"><a href="#Collect" class="headerlink" title="Collect"></a>Collect</h4><p>将操作后的对象转化为新的对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void testCollect()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line"></span><br><span class="line">        //转换为新的list</span><br><span class="line">        List newList = list.stream().map(s -&gt; Integer.valueOf(s)).collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h4><p>Filter 为过滤的意思，只要满足 Filter 表达式的数据就可以留下来，不满足的数据被过滤掉</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void testFilter() &#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;        </span><br><span class="line">        </span><br><span class="line">        list.stream()</span><br><span class="line">                // 过滤掉我们希望留下来的值</span><br><span class="line">                // 表示我们希望字符串是 1 能留下来</span><br><span class="line">                // 其他的过滤掉</span><br><span class="line">                .filter(str -&gt; &quot;1&quot;.equals(str))</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h4><p>map 方法可以让我们进行一些流的转化，比如原来流中的元素是 A，通过 map 操作，可以使返回的流中的元素是 B</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void testMap() &#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        //通过 map 方法list中元素转化成 小写</span><br><span class="line">        List&lt;String&gt; strLowerList = list.stream()</span><br><span class="line">                .map(str -&gt; str.toLowerCase())</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="MapToInt"><a href="#MapToInt" class="headerlink" title="MapToInt"></a>MapToInt</h4><p>mapToInt 方法的功能和 map 方法一样，只不过 mapToInt 返回的结果已经没有泛型，已经明确是 int 类型的流了，源码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public void testMapToInt() &#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        list.stream()</span><br><span class="line">                .mapToInt(s-&gt;Integer.valueOf(s))</span><br><span class="line">                // 一定要有 mapToObj，因为 mapToInt 返回的是 IntStream，因为已经确定是 int 类型了</span><br><span class="line">                // 所有没有泛型的，而 Collectors.toList() 强制要求有泛型的流，所以需要使用 mapToObj</span><br><span class="line">                // 方法返回有泛型的流</span><br><span class="line">                .mapToObj(s-&gt;s)</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        list.stream()</span><br><span class="line">                .mapToDouble(s-&gt;Double.valueOf(s))</span><br><span class="line">                // DoubleStream/IntStream 有许多 sum（求和）、min（求最小值）、max（求最大值）、average（求平均值）等方法</span><br><span class="line">                .sum();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Distinct"><a href="#Distinct" class="headerlink" title="Distinct"></a>Distinct</h4><p>distinct 方法有去重的功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void testDistinct()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                .distinct()</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Sorted"><a href="#Sorted" class="headerlink" title="Sorted"></a>Sorted</h4><p>Sorted 方法提供了排序的功能，并且允许我们自定义排序</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public void testSorted()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                // 等同于 .sorted(Comparator.naturalOrder()) 自然排序</span><br><span class="line">                .sorted()</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        // 自定义排序器</span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                // 反自然排序</span><br><span class="line">                .sorted(Comparator.reverseOrder())</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="groupingBy"><a href="#groupingBy" class="headerlink" title="groupingBy"></a>groupingBy</h4><p>groupingBy 是能够根据字段进行分组，toMap 是把 List 的数据格式转化成 Map 的格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public void testGroupBy()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, List&lt;String&gt;&gt; strList = list.stream().collect(Collectors.groupingBy(s -&gt; &#123;</span><br><span class="line">            if(&quot;2&quot;.equals(s)) &#123;</span><br><span class="line">                return &quot;2&quot;;</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                return &quot;1&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="FindFirst"><a href="#FindFirst" class="headerlink" title="FindFirst"></a>FindFirst</h4><p>findFirst 表示匹配到第一个满足条件的值就返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public void testFindFirst()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        </span><br><span class="line">        list.stream()</span><br><span class="line">                .filter(s-&gt;&quot;2&quot;.equals(s))</span><br><span class="line">                .findFirst()</span><br><span class="line">                .get();</span><br><span class="line">        </span><br><span class="line">        // 防止空指针</span><br><span class="line">        list.stream()</span><br><span class="line">                .filter(s-&gt;&quot;2&quot;.equals(s))</span><br><span class="line">                .findFirst()</span><br><span class="line">                // orElse 表示如果 findFirst 返回 null 的话，就返回 orElse 里的内容</span><br><span class="line">                .orElse(&quot;3&quot;);</span><br><span class="line"></span><br><span class="line">        Optional&lt;String&gt; str= list.stream()</span><br><span class="line">                .filter(s-&gt;&quot;2&quot;.equals(s))</span><br><span class="line">                .findFirst();</span><br><span class="line">        // isPresent 为 true 的话，表示 value != null</span><br><span class="line">        if(str.isPresent())&#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h4><p>reduce 方法允许我们在循环里面叠加计算值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public void testReduce()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        </span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                // s1 和 s2 表示循环中的前后两个数</span><br><span class="line">                .reduce((s1,s2) -&gt; s1+s2)</span><br><span class="line">                .orElse(0);</span><br><span class="line"></span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                // 第一个参数表示基数，会从 100 开始加</span><br><span class="line">                .reduce(100,(s1,s2) -&gt; s1+s2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Peek"><a href="#Peek" class="headerlink" title="Peek"></a>Peek</h4><p>peek 方法很简单，我们在 peek 方法里面做任意没有返回值的事情，比如打印日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void testPeek()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        list.stream().map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                .peek(s -&gt; System.out.println(s))</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h4><p>limit 方法会限制输出值个数，入参是限制的个数大小</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public void testLimit()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;3&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        list.stream()</span><br><span class="line">                .map(s -&gt; Integer.valueOf(s))</span><br><span class="line">                .limit(2L)</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Max，Min"><a href="#Max，Min" class="headerlink" title="Max，Min"></a>Max，Min</h4><p>通过max、min方法，可以获取集合中最大、最小的对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public void testMaxMin()&#123;</span><br><span class="line">        List&lt;String&gt; list = new ArrayList&lt;String&gt;() &#123;&#123;</span><br><span class="line">            add(&quot;1&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">            add(&quot;2&quot;);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line"></span><br><span class="line">        list.stream().max(Comparator.comparing(s -&gt; Integer.valueOf(s))).get();</span><br><span class="line">        list.stream().min(Comparator.comparing(s -&gt; Integer.valueOf(s))).get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>本文我们介绍十几种 Lambda 表达式常用的方法</p>
+<p>懂这些，这样你在工作中遇到复杂数据结构转化时，肯定会得心应手了。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>作者:</span>
+                        <span>Ityoung</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>本站链接:</span>
+                        <span><a href="http://www.ityoung.xyz/posts/64600/">http://www.ityoung.xyz/posts/64600/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>执照:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+				<!--
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+				-->
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>标签:</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Stream/"><i class="iconfont icon-githubiconfont icon-tags"></i>Stream</a>
+                    
+                        <a href="/tags/Lambda/"><i class="iconfont icon-githubiconfont icon-tags"></i>Lambda</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回</a>
+                <span>· </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/10714/">Redis常用五大类型(操作命令)</a>
+            
+            
+            <a class="next" rel="next" href="/posts/61237/">排序算法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Powered by Ityoung</span>
+		
+			<br/>
+			
+
+	<span id="busuanzi_container_site_pv">
+		总访问量:
+		<span id="busuanzi_value_site_pv"></span>
+	</span>
+
+
+	<span id="busuanzi_container_site_uv">
+		总访客量:
+		<span  id="busuanzi_value_site_uv"></span>
+	</span>&nbsp;
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+		
+	</div>
+	
+</footer>
+
+    </div>
+</body>
+</html>
